@@ -150,17 +150,11 @@ func (p *Poloniex) OrderBookAll() (orderBook OrderBookAll, err error) {
 	return
 }
 
-func (p *Poloniex) TradeHistory(in ...interface{}) (tradeHistory TradeHistory, err error) {
+func (p *Poloniex) TradeHistory(pair string, start, end time.Time) (tradeHistory TradeHistory, err error) {
 	params := url.Values{}
-	params.Add("currencyPair", in[0].(string))
-	if len(in) > 1 {
-		// we have a start date
-		params.Add("start", fmt.Sprintf("%d", in[1].(int64)))
-	}
-	if len(in) > 2 {
-		// we have an end date
-		params.Add("end", fmt.Sprintf("%d", in[2].(int64)))
-	}
+	params.Add("currencyPair", pair)
+	params.Add("start", fmt.Sprintf("%d", start.Unix()))
+	params.Add("end", fmt.Sprintf("%d", end.Unix()))
 	err = p.public("returnTradeHistory", params, &tradeHistory)
 	return
 }
